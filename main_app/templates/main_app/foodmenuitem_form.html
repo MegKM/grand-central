@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form enctpye="multipart/form-data" method="post">
+    <form method="post">
         {% csrf_token %}
         <table>
             <p>
@@ -20,12 +20,6 @@
             <p>
                 <label for="id_inStock">InStock:</label>
                 <input type="checkbox" name="inStock" id="id_inStock" checked>
-            </p>
-            <p>
-                {{ form|crispy }}
-                <input type="file" name="photo-file">
-                <label for="id_imageURL">ImageURL:</label>
-                <input type="text" name="imageURL" maxlength="200" required id="id_imageURL">
             </p>
             <p>
                 <label for="id_side_option">Side option:</label>
@@ -105,6 +99,6 @@
                 <span class="helptext">Select all that apply</span>
             </p>
         </table>
-    <input type="submit" value="Submit" class="btn">
+        <input type="submit" value="Submit" class="btn">
     </form>
 {% endblock %}

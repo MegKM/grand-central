@@ -1,15 +1,26 @@
+{% load compress %}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grand Central Hotel</title>
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    {% endcompress %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <nav>
     <ul>
-        <li><a href="{% url 'food_menu' %}">Menu</a></li>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'food_menu' %}">Food Menu</a></li>
+        <li><a href="{% url 'drink_menu' %}">Drink Menu</a></li>
+
         {% if user.is_superuser%}
             <li><a href="{% url 'food_menu_item_create' %}">Add food</a></li>
+            <li><a href="{% url 'drink_menu_item_create' %}">Add Drinks</a></li>
             <li><a href="{% url 'logout' %}">Log out</a></li>
         {% endif %}
     </ul>
@@ -17,5 +28,6 @@
 <body>
     {% block content %}
     {% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
 </body>
 </html>

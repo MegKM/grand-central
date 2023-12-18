@@ -8,6 +8,11 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">{{ food.name }}</span>
+                {% for photo in food.foodphoto_set.all %}
+                    <img class="responsive-img card-panel" src="{{photo.url}}">
+                {% empty %}
+                    <div></div>
+                {% endfor %}
             </div>
         </div>
     </a>

@@ -48,14 +48,45 @@ class RemoveOption(models.Model):
 
     def __str__(self):
         return self.name  
+    
+class CoffeeSizeOption(models.Model):
+    name = models.CharField(max_length=50)
+    price = models.DecimalField(default = 0.0, decimal_places = 2, max_digits = 10)
 
+    def __str__(self):
+        return f'{self.name} - ${self.price}'
+    
+class MilkOption(models.Model):
+    name = models.CharField(max_length=50)
+    price = models.DecimalField(default = 0.0, decimal_places = 2, max_digits = 10)
 
+    def __str__(self):
+        return f'{self.name} - ${self.price}'
+    
+class CoffeeStrengthOption(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class SoftDrinkOption(models.Model):
+    name = models.CharField(max_length=50)
+    price = models.DecimalField(default = 0.0, decimal_places = 2, max_digits = 10)
+
+    def __str__(self):
+        return f'{self.name} - ${self.price}'
+
+class HotChocolateOption(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+    
 class FoodMenuItem(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=500)
     price = models.DecimalField(default = 1.0, decimal_places = 2, max_digits = 10)
     inStock = models.BooleanField(default = True)    
-    imageURL = models.CharField(max_length=200)
     side_option = models.ManyToManyField(SideOption, help_text='Select all that apply', blank=True)
     added_option = models.ManyToManyField(AddedOption, help_text='Select all that apply', blank=True)
     size_option = models.ManyToManyField(SizeOption, help_text='Select all that apply', blank=True)
@@ -78,11 +109,25 @@ class FoodMenuItem(models.Model):
     def get_absolute_url(self):
         return reverse('food_menu_item_detail', kwargs={'pk': self.id})
     
+class DrinkMenuItem(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=500)
+    price = models.DecimalField(default = 1.0, decimal_places = 2, max_digits = 10)
+    inStock = models.BooleanField(default = True)
+    inhouse_option = models.BooleanField(default = False)
+    coffee_size_option = models.ManyToManyField(CoffeeSizeOption, help_text='Select all that apply', blank=True)
+    milk_option = models.ManyToManyField(MilkOption, help_text='Select all that apply', blank=True)
+    coffee_strength_option = models.ManyToManyField(CoffeeStrengthOption, help_text='Select all that apply', blank=True)
+    soft_drink_option = models.ManyToManyField(SoftDrinkOption, help_text='Select all that apply', blank=True)
+    hot_chocolate_option = models.ManyToManyField(HotChocolateOption, help_text='Select all that apply', blank=True)
+    
+    def get_absolute_url(self):
+        return reverse('drink_menu_item_detail', kwargs={'pk': self.id})
+    
 class Order(models.Model):
     date = models.DateField()
     total_price = models.FloatField(default = 1.0)
     notes = models.TextField(max_length=500)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Order no. {self.id}'
@@ -92,7 +137,7 @@ class Order(models.Model):
 
 class LineItem(models.Model):
     name = models.CharField(max_length=100)
-    price = FloatField()
+    price = models.FloatField(default = 0)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     item = models.ForeignKey(FoodMenuItem, on_delete=models.CASCADE)
    

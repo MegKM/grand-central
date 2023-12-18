@@ -1,3 +1,21 @@
+# def add_photo(request, foodmenuitem_id):
+#     foodmenuitem = FoodMenuItem.objects.get(pk=foodmenuitem_id)
+#     photo_file = request.FILES.get('photo-file', None)
+#     if photo_file:
+#         s3 = boto3.client('s3')
+#         key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+#         print(key)
+#         try:
+#             bucket = os.environ['S3_BUCKET']
+#             s3.upload_fileobj(photo_file, bucket, key)
+#             url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+#             FoodPhoto.objects.create(url=url, food=foodmenuitem, name=foodmenuitem)
+#         except Exception as e:
+#             print('An error occurred uploading file to S3')
+#             print(e)
+#     return redirect('food_menu_item_detail', pk=foodmenuitem_id)
+
+
 
 def add_size_price(self):
     total_price = self.price
