@@ -1,4 +1,3 @@
-{% load compress %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -7,27 +6,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grand Central Hotel</title>
-    {% compress css %}
-    <link rel="stylesheet" href="{% static 'src/output.css' %}">
-    {% endcompress %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
 </head>
-<nav>
-    <ul>
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'food_menu' %}">Food Menu</a></li>
-        <li><a href="{% url 'drink_menu' %}">Drink Menu</a></li>
-
-        {% if user.is_superuser%}
-            <li><a href="{% url 'food_menu_item_create' %}">Add food</a></li>
-            <li><a href="{% url 'drink_menu_item_create' %}">Add Drinks</a></li>
-            <li><a href="{% url 'logout' %}">Log out</a></li>
-        {% endif %}
-    </ul>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Grand Central Hotel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse position-absolute bottom-0 end-0" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'food_menu' %}">Food Menu</a></li>
+                        <li><a class="dropdown-item" href="{% url 'drink_menu' %}">Drink Menu</a></li>
+                    </ul>
+                </li>
+                {% if user.is_superuser%}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Admin
+                    </a>
+                    <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'food_menu_item_create' %}">Add food</a></li>
+                    <li><a class="dropdown-item" href="{% url 'drink_menu_item_create' %}">Add Drinks</a></li>
+                    </ul>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <li>
+                    <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Log Out</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Log In</a>
+                </li>
+                <li>
+                    <a class="nav-link active" aria-current="page" href="{% url 'signup' %}">Sign Up</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
 </nav>
 <body>
-    {% block content %}
-    {% endblock %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        <script src="{% static 'js/bootstrap.js' %}"></script>
+    </div>
 </body>
 </html>

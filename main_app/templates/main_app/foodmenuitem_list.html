@@ -1,21 +1,98 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Food Menu</h1>
-
-{% for food in foodmenuitem_list %}
-    <a href="{% url 'food_menu_item_detail' food.id%}">
-        <div class="card">
-            <div class="card-content">
-                <span class="card-title">{{ food.name }}</span>
-                {% for photo in food.foodphoto_set.all %}
-                    <img class="responsive-img card-panel" src="{{photo.url}}">
-                {% empty %}
-                    <div></div>
-                {% endfor %}
-            </div>
+<h1 class="mt-2">Food Menu</h1>
+<nav class="navbar navbar-expand-lg bg-body-tertiary center mt-2 mb-2">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav filters">
+                <li class="nav-item">
+                    <button class="btn">All</a>
+                </li>
+                    <button class="btn">Starters</button>
+                <li class="nav-item">
+                    <button class="btn">Brunch</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn">Mains</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn">Burgers</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn">Pasta</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn">Salad Mains</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn">Chef's Special</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn">Thursday Parma Night</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn">Kid's Meals</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn">Desserts</button>
+                </li>
+            </ul>
         </div>
-    </a>
-{% endfor %}
+    </div>
+</nav>
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for food in foodmenuitem_list %}
+                <div class="col">
+                    <div class="card h-100" style="max-width: 600px;">
+                        <div class="row g-0">
+                        <div class="col-md-4">
+                            {% for photo in food.foodphoto_set.all %}
+                                <img src="{{ photo.url }}" class="img-fluid rounded-start" alt="Image of {{ food.name }}">
+                            {% empty %}
+                                <div></div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ food.name }}</h5>
+                                <p class="card-text">{{ food.description }}</p>
+                                {% if user.is_superuser %}
+                                    <a href="{% url 'food_menu_item_detail' food.id %}">Edit</a>
+                                {% endif %}
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'food_line_item_create food.id %}">Add to order</a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+      </div>
+  </div>
+</div>
 
 {% endblock %}
+
+{% block javascript  %}
+    <script>
+        // each button has an event listener to hide all the food and redisplay
+        // just the selected category
+        document.querySelectorAll('.filters button').forEach((button) => {
+            button.addEventListener('click', () => {
+                // hide everything
+                document.querySelectorAll('.food').forEach((div) => div.style.display = 'none')
+                // display the current category
+                const category = button.innerText;
+                document.querySelector(`.food.${ category }`).style.display = 'block';
+            })
+        });
+    </script>
+{% endblock %}
+

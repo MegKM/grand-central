@@ -75,3 +75,17 @@ REMOVABLE_OPTIONS = (
     ('LE', 'Lettuce'),
     ('CO', 'Coleslaw'),
 )
+
+# class Customer(AbstractUser):
+#     class Role(models.TextChoices):
+#         GUEST = "GUEST", 'Guest'
+#         USER = "USER", 'User'
+
+#     base_role = Role.USER
+
+#     role = models.CharField(max_length = 50, choices = Role.choices)
+
+#     def save(self, *args, **kwargs):
+#         if not self.pk: 
+#             self.role = self.base_role
+#             return super().save(*args, **kwargs)

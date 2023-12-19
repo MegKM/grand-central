@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="mt-2">Sign Up</h1>
+
+<p>{{ error_message }}</p>
+
+<form method="POST" action="{% url 'signup' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label" for="id_username">Username:</label>
+        <input type="text" name="username" maxlength="150" autofocus required id="id_username">
+        <div class="helptext form-text">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</div>        
+    </div>
+    <div class="mb-3">
+        <label  class="form-label" for="id_email">Email address:</label>
+        <input type="email" name="email" maxlength="320" id="id_email">
+        <div class="helptext form-text">Enter email to hear about upcoming events (not required).</div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="id_password1">Password:</label>
+        <input type="password" name="password1" autocomplete="new-password" required id="id_password1">
+        <div class="helptext form-text">
+            <ul>
+                <li>Your password can't be too similar to your other personal information.</li>
+                <li>Your password must contain at least 8 characters.</li>
+                <li>Your password can't be a commonly used password.</li>
+                <li>Your password can't be entirely numeric.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label  class="form-label" for="id_password2">Confirm password:</label>
+        <input type="password" name="password2" autocomplete="new-password" required id="id_password2">
+    </div>
+    <input type="submit" class="btn btn-dark" value="Sign Up">
+</form>
+<hr>
+
+
+{% endblock %}

@@ -8,9 +8,35 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import user_passes_test
 from .models import FoodMenuItem, FoodPhoto, DrinkMenuItem
+from .forms import UserCreationForm
 
 def home(request):
     return render(request, 'home.html')
+
+def signup(request):
+    error_message = ''
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+        else:
+            if 'username' in form.errors:
+                username_errors = form.errors['username']
+                if 'This field may only contain letters, numbers, and @/./+/-/_ characters.' in username_errors:
+                    error_message = 'Invalid characters in username. Please use only letters, numbers, and @/./+/-/_ characters.'
+                elif 'A user with that username already exists.' in username_errors:
+                    error_message = 'Username is already taken. Please choose a different one.'
+                else:
+                    error_message = 'Invalid username. Please choose a different one.'
+            elif 'password1' in form.errors or 'password2' in form.errors:
+                error_message = 'Invalid password - passwords do not match or are weak.'
+            else:
+                error_message = 'Invalid sign up - try again'
+    form = UserCreationForm()
+    context = {'form': form, 'error_message': error_message}
+    return render(request, 'registration/signup.html', context)
 
 class FoodMenuItemList(ListView):
     model = FoodMenuItem
