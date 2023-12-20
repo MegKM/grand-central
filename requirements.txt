@@ -15,7 +15,6 @@ configobj==5.0.8
 cookiecutter==2.5.0
 cryptography==38.0.4
 distro==1.8.0
-distro-info==1.5
 dj-database-url==2.1.0
 Django==4.2.4
 django-appconf==1.0.6
