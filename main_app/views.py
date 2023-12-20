@@ -7,8 +7,9 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import user_passes_test
-from .models import FoodMenuItem, FoodPhoto, DrinkMenuItem
+from .models import FoodMenuItem, FoodPhoto, DrinkMenuItem, Order
 from .forms import UserCreationForm
+from .forms import LineItemForm, NewOrderForm
 
 def home(request):
     return render(request, 'home.html')
@@ -92,3 +93,34 @@ def add_photo(request, foodmenuitem_id):
             print('An error occurred uploading file to S3')
             print(e)
     return redirect('food_menu_item_detail', pk=foodmenuitem_id)
+
+def create_line_item(request, pk):
+    foodmenuitem = FoodMenuItem.objects.get(pk=pk)
+    error_message = ''  
+
+    if request.method == 'POST':
+        form = LineItemForm(request.POST)
+        if form.is_valid():
+            lineItem = form.save()
+            return redirect('menu/food')
+        else:
+            error_message = 'Failed'
+
+    form = LineItemForm()
+    context = {
+        'form': form, 
+        'error_message': error_message,
+        'foodmenuitem': foodmenuitem,
+        }
+
+    return render(
+        request,
+        'addlineitem.html',
+        context,
+        
+    )
+
+
+class OrderCreate(CreateView):
+    model = Order
+    fields = ("name", "pickup_deliver", "phone", "address")

@@ -1,4 +1,7 @@
+from django import forms
+from .models import LineItem, Order
 from django.forms import EmailField 
+from django.forms.models import inlineformset_factory
 from django.utils.translation import gettext_lazy as _ 
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -18,3 +21,12 @@ class UserCreationForm(UserCreationForm):
             user.save()
         return user
     
+class LineItemForm(forms.ModelForm):
+    class Meta:
+        model = LineItem
+        fields = '__all__'
+
+class NewOrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ("name", "pickup_deliver", "phone", "address")

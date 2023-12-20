@@ -4,6 +4,11 @@ from django.urls import reverse
 from datetime import date
 from django.contrib.auth.models import User
 
+PICKUP_DELIVER = (
+    ('P', 'Pick up'),
+    ('D', 'Delivery')
+)
+    
 class SideOption(models.Model):
     name = models.CharField(max_length=50)
 
@@ -125,10 +130,18 @@ class DrinkMenuItem(models.Model):
         return reverse('drink_menu_item_detail', kwargs={'pk': self.id})
     
 class Order(models.Model):
+    name = models.CharField(max_length = 50, help_text='Enter a name for the order', default="")
+    pickup_deliver = models.CharField(
+        max_length=1,
+        choices=PICKUP_DELIVER,
+        default=PICKUP_DELIVER[0][0]
+    )
+    phone = models.IntegerField()
+    address = models.TextField(max_length=100, default='')
     date = models.DateField()
-    total_price = models.FloatField(default = 1.0)
-    notes = models.TextField(max_length=500)
-    user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default='Guest')
+    total_price = models.FloatField(default = 0.0)
+    notes = models.TextField(max_length=500, default='')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Order no. {self.id}'
@@ -136,25 +149,23 @@ class Order(models.Model):
     class Meta:
         ordering = ['-date']
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.date = date.today()
+            super().save(*args, **kwargs)
+
 class LineItem(models.Model):
     name = models.CharField(max_length=100)
     price = models.FloatField(default = 0)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     item = models.ForeignKey(FoodMenuItem, on_delete=models.CASCADE)
     side_option = models.ManyToManyField(SideOption, help_text='Select all that apply', blank=True)
+    added_option = models.ManyToManyField(AddedOption, help_text='Select all that apply', blank=True)
     size_option = models.ManyToManyField(SizeOption, help_text='Select all that apply', blank=True)
+    gravy_option = models.ManyToManyField(GravyOption, help_text='Select all that apply', blank=True)
     cook_option = models.ManyToManyField(CookOption, help_text='Select all that apply', blank=True)
     sauce_option = models.ManyToManyField(SauceOption, help_text='Select all that apply', blank=True)
     remove_option = models.ManyToManyField(RemoveOption, help_text='Select all that apply', blank=True)
-
-    def save(self, *args, **kwargs):
-        if self.item:
-            self.side_option.set(self.item.side_option.all())
-        if self.item:
-            self.added_option.set(self.item.added_option.all())
-        if self.item:
-            self.gravy_option.set(self.item.gravy_option.all())
-        super().save(*args, **kwargs)
    
     def __str__(self):
         return f'Item {self.id} - {self.item.name}'
