@@ -78,7 +78,6 @@ rich==13.3.1
 rjsmin==1.2.1
 rlPyCairo==0.3.0
 s3transfer==0.8.2
-screen-resolution-extra==0.0.0
 SecretStorage==3.3.3
 six==1.16.0
 sqlparse==0.4.2
