@@ -1,8 +1,11 @@
 from django.db import models
 from django.forms import FloatField, BooleanField, DecimalField
 from django.urls import reverse
+from django_quill.fields import QuillField
 from datetime import date
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 PICKUP_DELIVER = (
     ('P', 'Pick up'),
@@ -136,12 +139,11 @@ class Order(models.Model):
         choices=PICKUP_DELIVER,
         default=PICKUP_DELIVER[0][0]
     )
-    phone = models.IntegerField()
-    address = models.TextField(max_length=100, default='')
     date = models.DateField()
     total_price = models.FloatField(default = 0.0)
     notes = models.TextField(max_length=500, default='')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    isInProgress = models.BooleanField(default=True)
 
     def __str__(self):
         return f'Order no. {self.id}'
@@ -158,7 +160,6 @@ class LineItem(models.Model):
     name = models.CharField(max_length=100)
     price = models.FloatField(default = 0)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    item = models.ForeignKey(FoodMenuItem, on_delete=models.CASCADE)
     side_option = models.ManyToManyField(SideOption, help_text='Select all that apply', blank=True)
     added_option = models.ManyToManyField(AddedOption, help_text='Select all that apply', blank=True)
     size_option = models.ManyToManyField(SizeOption, help_text='Select all that apply', blank=True)
@@ -168,7 +169,7 @@ class LineItem(models.Model):
     remove_option = models.ManyToManyField(RemoveOption, help_text='Select all that apply', blank=True)
    
     def __str__(self):
-        return f'Item {self.id} - {self.item.name}'
+        return f'Item {self.name} - {self.order}'
  
 class MenuOption(models.Model):
     category = models.CharField(max_length=50)
@@ -200,18 +201,44 @@ class DrinkPhoto(models.Model):
     def __str__(self):
         return f"Photo of {self.name}"
     
-class Events(models.Model):
+class Event(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(max_length=500)
+    description = QuillField(default='')
 
     def __str__(self):
         return f"Event: {self.name}"
+    
+    def get_absolute_url(self):
+        return reverse('event_detail', kwargs={'pk': self.id})
 
 class EventPhoto(models.Model):
     name = models.CharField(max_length=50)
     url = models.CharField(max_length=200)
-    food = models.ForeignKey(FoodMenuItem, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Photo of {self.name}"
 
+class VenuePhoto(models.Model):
+    name = models.CharField(max_length=50)
+    url = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"Photo of {self.name}"
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    marketing = models.BooleanField(default=False)
+    phone = models.IntegerField()
+    street_address = models.CharField(max_length = 50, blank=True)
+    suburb = models.CharField(max_length=20, blank=True)
+    postcode = models.CharField(max_length=4, blank=True)
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div>
+    <h1>Order</h1>
+
+    {% for item in order.lineitem_set.all %}
+        <h3>{{ item.name }}</h3>
+        <ul>
+            {% if item.side_option.exists %}
+                {% for option in item.side_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.added_option.exists %}
+                {% for option in item.added_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.size_option.exists %}
+                {% for option in item.size_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.gravy_option.exists %}
+                {% for option in item.gravy_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.cook_option.exists %}
+                {% for option in item.cook_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.sauce_option.exists %}
+                {% for option in item.sauce_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.remove_option.exists %}
+                {% for option in item.remove_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    {% endfor %}
+
+</div>
+{% endblock %}

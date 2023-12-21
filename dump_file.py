@@ -15,7 +15,36 @@
 #             print(e)
 #     return redirect('food_menu_item_detail', pk=foodmenuitem_id)
 
-
+# def signup(request):
+#     error_message = ''
+#     if request.method == 'POST':
+#         user_form = UserCreationForm(request.POST)
+#         profile_form = ProfileForm(request.POST)
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form = user_form.save()
+#             profile_form.save()
+#             login(request, user_form)
+#             return redirect('home')
+#         else:
+#             if 'username' in user_form.errors:
+#                 username_errors = user_form.errors['username']
+#                 if 'This field may only contain letters, numbers, and @/./+/-/_ characters.' in username_errors:
+#                     error_message = 'Invalid characters in username. Please use only letters, numbers, and @/./+/-/_ characters.'
+#                 elif 'A user with that username already exists.' in username_errors:
+#                     error_message = 'Username is already taken. Please choose a different one.'
+#                 else:
+#                     error_message = 'Invalid username. Please choose a different one.'
+#             elif 'password1' in user_form.errors or 'password2' in user_form.errors:
+#                 error_message = 'Invalid password - passwords do not match or are weak.'
+#             else:
+#                 error_message = 'Invalid sign up - try again'
+#     user_form = UserCreationForm()
+#     profile_form = ProfileForm()
+#     context = {
+#         'user_form': user_form, 
+#         'profile_form': profile_form,
+#         'error_message': error_message}
+#     return render(request, 'registration/signup.html', context)
 
 def add_size_price(self):
     total_price = self.price
@@ -89,3 +118,18 @@ REMOVABLE_OPTIONS = (
 #         if not self.pk: 
 #             self.role = self.base_role
 #             return super().save(*args, **kwargs)
+
+# class UserCreationForm(UserCreationForm):
+#     email = EmailField(label=_("Email address"), required=False, 
+#         help_text=_("Enter email to hear about upcoming events."))
+
+#     class Meta:
+#         model = User
+#         fields = ("first_name", "last_name" "email", "password1", "password2")
+
+#     def save(self, commit=True):
+#         user = super(UserCreationForm, self).save(commit=False)
+#         user.email = self.cleaned_data["email"]
+#         if commit:
+#             user.save()
+#         return user

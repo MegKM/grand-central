@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col s6 col-offset-3">
+        <h1>{{ event.name }}</h1>
+        <p>{{ event.description.html|safe }}</p>
+    </div>
+</div>
+<div class="col s6 col-offset-3">
+    {% for photo in event.eventphoto_set.all %}
+        <img class="card-img-left" src="{{photo.url}}">
+    {% empty %}
+        <div class="card-panel teal-text center-align">No Photos Uploaded</div>
+    {% endfor %}
+    <div class="card-body">
+        <form action="{% url 'add_event_photo' event.id %}" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <input type="file" name="photo-file">
+            <br><br>
+            <button type="submit" class="btn btn-dark">Upload Photo</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

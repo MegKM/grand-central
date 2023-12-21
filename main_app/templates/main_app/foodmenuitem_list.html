@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1 class="mt-2">Food Menu</h1>
 <nav class="navbar navbar-expand-lg bg-body-tertiary center mt-2 mb-2">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -43,10 +42,10 @@
 </nav>
 
 
-<div class="container">
+<div class="container food all">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="row row-cols-1 row-cols-md-2 g-4 all">
             {% for food in foodmenuitem_list %}
                 <div class="col">
                     <div class="card h-100" style="max-width: 600px;">
@@ -79,21 +78,24 @@
   </div>
 </div>
 
-{% endblock %}
-
 {% block javascript  %}
     <script>
         // each button has an event listener to hide all the food and redisplay
         // just the selected category
-        document.querySelectorAll('.filters button').forEach((button) => {
+        document.querySelectorAll('button').forEach((button) => {
             button.addEventListener('click', () => {
                 // hide everything
                 document.querySelectorAll('.food').forEach((div) => div.style.display = 'none')
                 // display the current category
                 const category = button.innerText;
+                console.log(category)
                 document.querySelector(`.food.${ category }`).style.display = 'block';
             })
         });
     </script>
 {% endblock %}
+
+{% endblock %}
+
+
 

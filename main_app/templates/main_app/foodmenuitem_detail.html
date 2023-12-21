@@ -90,7 +90,7 @@
         {% endfor %}
         <div class="card-body">
         {% if user.is_superuser %}
-            <form action="{% url 'add_photo' foodmenuitem.id %}" enctype="multipart/form-data" method="POST">
+            <form action="{% url 'add_food_photo' foodmenuitem.id %}" enctype="multipart/form-data" method="POST">
                 {% csrf_token %}
                 <input type="file" name="photo-file">
                 <br><br>

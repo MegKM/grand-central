@@ -3,7 +3,113 @@
 
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div>
+        <label for="id_name">Name:</label>
+        <input name="name" id="id_name" value="{{foodmenuitem.name}}">{{ foodmenuitem.name}}</input>
+  </div>
+    <div>
+        <label for="id_price">Price:</label>
+      <input name="price" id="id_price" value="{{ foodmenuitem.price }}"> {{ foodmenuitem.price }}</input>
+  </div>
+    <div>
+        <label for="id_order">Order:</label>
+        <input name="order" id="id_order" value="{{ order.id }}"> {{ order.id }}</input>
+
+  </div>
+  <div>
+    {% if foodmenuitem.side_option.exists %}
+        <label for="id_side_option">Side option:</label>
+        <div class="helptext">Select all that apply</div>
+        <select name="side_option" id="id_side_option" >
+            {% for option in foodmenuitem.side_option.all %}
+                <option value="{{ option.id }}">{{ option.name }}</option>
+            {% endfor %}
+        </select>
+    {% else %}
+        <span></span>
+    {% endif %}
+    </div>
+    <div>
+        {% if foodmenuitem.added_option.exists %}
+            <label for="id_added_option">Added option:</label>
+            <div class="helptext">Select all that apply</div>
+            <select name="added_option" id="id_added_option" multiple>
+                {% for option in foodmenuitem.added_option.all %}
+                    <option value="{{ option.id }}">{{ option.name }}</option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <span></span>
+        {% endif %}
+        </div>
+  <div>
+    {% if foodmenuitem.size_option.exists %}
+        <label for="id_size_option">Size option:</label>
+        <div class="helptext">Select all that apply</div>
+        <select name="size_option" id="id_size_option" >
+            {% for option in foodmenuitem.size_option.all %}
+                <option value="{{ option.id }}">{{ option.name }}</option>
+            {% endfor %}
+        </select>
+    {% else %}
+        <span></span>
+    {% endif %}
+    </div>
+    <div>
+        {% if foodmenuitem.gravy_option.exists %}
+            <label for="id_gravy_option">Gravy option:</label>
+            <div class="helptext">Select all that apply</div>
+            <select name="gravy_option" id="id_gravy_option" multiple>
+                {% for option in foodmenuitem.gravy_option.all %}
+                    <option value="{{ option.id }}">{{ option.name }}</option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <span></span>
+        {% endif %}
+        </div>
+    <div>
+        {% if foodmenuitem.cook_option.exists %}
+            <label for="id_cook_option">Cook option:</label>
+            <div class="helptext">Select all that apply</div>
+            <select name="cook_option" id="id_cook_option" multiple>
+                {% for option in foodmenuitem.cook_option.all %}
+                    <option value="{{ option.id }}">{{ option.name }}</option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <span></span>
+        {% endif %}
+        </div>
+    <div>
+        {% if foodmenuitem.sauce_option.exists %}
+            <label for="id_sauce_option">Sauce option:</label>
+            <div class="helptext">Select all that apply</div>
+            <select name="sauce_option" id="id_sauce_option" multiple>
+                {% for option in foodmenuitem.sauce_option.all %}
+                    <option value="{{ option.id }}">{{ option.name }}</option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <span></span>
+        {% endif %}
+        </div>
+        <div>
+            {% if foodmenuitem.remove_option.exists %}
+                <label for="id_remove_option">Remove option:</label>
+                <div class="helptext">Select all that apply</div>
+                <select name="remove_option" id="id_remove_option" multiple>
+                    {% for option in foodmenuitem.remove_option.all %}
+                        <option value="{{ option.id }}">{{ option.name }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <span></span>
+            {% endif %}
+            </div>
+
+  </div>
+      
     
     <input type="submit" value="Submit">
 </form>

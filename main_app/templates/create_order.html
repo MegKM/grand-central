@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="id_name">Name:</label>
+    <div class="helptext">Enter a name for the order</div>
+        <input type="text" name="name" maxlength="50" required id="id_name">
+    </div>
+    <div>
+        <label for="id_pickup_deliver">Pickup deliver:</label>
+        {{ order_form.pickup_deliver }}
+
+    </div>
+    <div>
+        <label for="id_phone">Phone:</label>
+        {{ profile_form.phone }}
+    </div>
+    <div id="address_field">
+        <div>
+            <label for="id_street_address">Street address:</label>
+            {{ profile_form.street_address }}
+        </div>
+        <div>
+            <label for="id_suburb">Suburb:</label>
+            {{ profile_form.suburb }}
+        </div>
+        <div>
+            <label for="id_postcode">Postcode:</label>
+            {{ profile_form.postcode }}
+        </div>
+    </div>
+    <button type="submit">Save changes</button>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pickupDeliverDropdown = document.getElementById("id_pickup_deliver");
+    const addressTextarea = document.getElementById("address_field");
+
+    pickupDeliverDropdown.addEventListener("change", function () {
+        addressTextarea.style.display = this.value === "D" ? "block" : "none";
+    });
+
+    addressTextarea.style.display = pickupDeliverDropdown.value === "D" ? "block" : "none";
+});
+</script>
+
+{% endblock %}
+
