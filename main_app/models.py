@@ -229,7 +229,7 @@ class VenuePhoto(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     marketing = models.BooleanField(default=False)
-    phone = models.IntegerField()
+    phone = models.IntegerField(default=0)
     street_address = models.CharField(max_length = 50, blank=True)
     suburb = models.CharField(max_length=20, blank=True)
     postcode = models.CharField(max_length=4, blank=True)
