@@ -65,7 +65,7 @@
                                     <a href="{% url 'food_menu_item_detail' food.id %}">Details</a>
                                 {% endif %}
                                 {% if user.is_authenticated %}
-                                    <a href="{% url 'add_line_item' food.id%}">Add to order</a>
+                                    <a href="{% url 'add_food_line_item' food.id%}">Add to order</a>
                                 {% endif %}
                             </div>
                         </div>
