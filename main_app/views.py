@@ -122,7 +122,7 @@ def add_drink_photo(request, drinkmenuitem_id):
         except Exception as e:
             print('An error occurred uploading file to S3')
             print(e)
-    return redirect('food_menu_item_detail', pk=drinkmenuitem_id)
+    return redirect('drink_menu_item_detail', pk=drinkmenuitem_id)
 
 def create_line_item(request, pk):
     foodmenuitem = FoodMenuItem.objects.get(pk=pk)
