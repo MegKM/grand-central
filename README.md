@@ -4,12 +4,12 @@
 
 The Grand Central Hotel Cobram is a pub in Northern Victoria that serves food, drinks, both eat-in and delivered, and hosts a number of regular events.  This project (still under development) is an e-commerce website with a focus on maximising the client's ability to manage their own site.  It features full CRUD functionality on any elements that could change, primarily the events and menu.
 
-At the moment The Grand Centarl Hotel is using:
+At the moment The Grand Central Hotel is using:
 * GoDaddy to host their website
 * Mr Yum to host their menu and look after ordering
-* Stripe to process payments
-* Doshii to link the site to their in-house software
-* Impos for their POS software.
+* Stripe to process payments (through Mr Yum)
+* Doshii to link the current site to their in-house software
+* IMPOS for their POS software.
 
 This project hopes to elimiate as many 3rd-party providers as possible, saving the admin staff on-site time, effort and money.
 
@@ -24,14 +24,14 @@ The site is currently live on heroku and can be visited [here](https://grandcent
 <img src="main_app/assets/events.png" style="max-width: 850px">
 
 ### Current functionality
-* Admin staff can CRUD Food & Drink Items, including various options (eg, sides, size of meals, gravy, etc.), as well as events.
+* Admin staff can CRUD Food & Drink Items, including various options (eg. sides, size of meals, gravy, etc.), as well as events.
 * Customers can view the events and menu.
-* After creating an account, customers can add various menu items to their order and view what is currently there.
+* After creating an account, customers can add various menu items to their order, adding and removing applicable sides, and view what is currently there.
 
 ### Currently being developed
 * Updates to the drinks menu and functionality.
 * Ability to remove items from order, view total dollar amount and finalise order.
-* General CSS improvements across site.
+* General CSS improvements across site (including media queries).
 * Filter menus by type, eg. mains, starters, coffee, etc.
 * Adding to the homepage:
     * live music events
