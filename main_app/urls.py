@@ -16,6 +16,7 @@ urlpatterns = [
     path('menu/drinks/', views.DrinkMenuItemList.as_view(), name='drink_menu'),
     path('menu/drinks/create/', views.DrinkMenuItemCreate.as_view(), name='drink_menu_item_create'),
     path('menu/drinks/<int:pk>/', views.DrinkMenuItemDetail.as_view(), name='drink_menu_item_detail'),
+    path('menu/food/<int:drinkmenuitem_id>/add_drink_photo/', views.add_drink_photo, name='add_drink_photo'),
     path('menu/drinks/<int:pk>/update/', views.DrinkMenuItemUpdate.as_view(), name='drink_menu_item_update'),
     path('menu/drinks/<int:pk>/delete/', views.DrinkMenuItemDelete.as_view(), name='drink_menu_item_delete'),
 

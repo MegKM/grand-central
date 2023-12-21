@@ -86,7 +86,7 @@
         {% for photo in foodmenuitem.foodphoto_set.all %}
             <img class="card-img-left" src="{{photo.url}}">
         {% empty %}
-            <div class="card-panel teal-text center-align">No Photos Uploaded</div>
+            <div class="card-panel center-align">No Photos Uploaded</div>
         {% endfor %}
         <div class="card-body">
         {% if user.is_superuser %}

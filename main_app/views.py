@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import user_passes_test
-from .models import FoodMenuItem, FoodPhoto, DrinkMenuItem, Order, Event, EventPhoto
+from .models import FoodMenuItem, FoodPhoto, DrinkMenuItem, DrinkPhoto, Order, Event, EventPhoto
 from .forms import UserCreationForm, ProfileForm
 from .forms import LineItemForm, OrderForm
 
@@ -104,6 +104,25 @@ def add_food_photo(request, foodmenuitem_id):
             print('An error occurred uploading file to S3')
             print(e)
     return redirect('food_menu_item_detail', pk=foodmenuitem_id)
+
+def add_drink_photo(request, drinkmenuitem_id):
+    drinkmenuitem = DrinkMenuItem.objects.get(pk=drinkmenuitem_id)
+    existing_photo = DrinkPhoto.objects.filter(drink=drinkmenuitem).exists()
+    if existing_photo:
+        DrinkPhoto.objects.filter(drink=drinkmenuitem).delete()
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        key = drinkmenuitem.name + '_' + str(drinkmenuitem_id) + photo_file.name[photo_file.name.rfind('.'):]
+        try:
+            bucket = os.environ['S3_BUCKET']
+            s3.upload_fileobj(photo_file, bucket, key)
+            url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+            DrinkPhoto.objects.create(url=url, drink=drinkmenuitem, name=drinkmenuitem)
+        except Exception as e:
+            print('An error occurred uploading file to S3')
+            print(e)
+    return redirect('food_menu_item_detail', pk=drinkmenuitem_id)
 
 def create_line_item(request, pk):
     foodmenuitem = FoodMenuItem.objects.get(pk=pk)
