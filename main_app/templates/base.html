@@ -50,23 +50,10 @@
                 {% endif %}
 
                 {% if user.is_authenticated %}
-                    {% if order.exists %}
-                        {% for o in order %}
-                            {% if o.isInProgress %}
-                            <li>
-                                <a class="nav-link active" aria-current="page" href="{% url 'order_view' %}">View order</a>
-                            </li>
-                            {% else %}
-                            <li>
-                                <a class="nav-link active" aria-current="page" href="{% url 'order_create' %}">Order</a>
-                            </li>
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
+
                         <li>
                             <a class="nav-link active" aria-current="page" href="{% url 'order_create' %}">Order</a>
                         </li>
-                    {% endif %}
                 {% else %}
                 <li>
                     <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Log in to order</a>

@@ -13,10 +13,10 @@ from .forms import LineItemForm, OrderForm
 
 def home(request):
     event_list = Event.objects.all()
-    order = Order.objects.filter(user=request.user, isInProgress=True)
+    # order = Order.objects.filter(user=request.user, isInProgress=True)
     context = {
         'event_list': event_list,
-        'order': order
+
         }
     return render(request, 'home.html', context)
 
