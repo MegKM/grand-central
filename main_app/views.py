@@ -133,6 +133,11 @@ def create_line_item(request, pk):
     )
 
 def create_order(request):
+    existing_order = Order.objects.filter(user=request.user).first()
+
+    if existing_order and existing_order.isInProgress:
+        return redirect('order_view')
+        
     if request.method == 'POST':
         order_form = OrderForm(request.POST)
         profile_form = ProfileForm(request.POST, instance=request.user.profile)
@@ -157,6 +162,7 @@ class EventList(ListView):
 
 class EventDetail(DetailView):
     model = Event
+
 
 def view_order(request):
     order = Order.objects.get(user=request.user, isInProgress=True)
