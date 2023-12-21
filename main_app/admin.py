@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import FoodMenuItem, SideOption, AddedOption, SizeOption, GravyOption, CookOption, SauceOption, RemoveOption, Order, LineItem, MenuOption, DietaryOption, FoodPhoto, SoftDrinkOption, HotChocolateOption, DrinkMenuItem, CoffeeSizeOption, MilkOption, CoffeeStrengthOption, Event, Profile
+from .models import FoodMenuItem, SideOption, AddedOption, SizeOption, GravyOption, CookOption, SauceOption, RemoveOption, Order, LineItem, MenuOption, DietaryOption, FoodPhoto, SoftDrinkSizeOption, HotChocolateOption, DrinkMenuItem, CoffeeSizeOption, MilkOption, CoffeeStrengthOption, Event, Profile
 
 admin.site.register(FoodMenuItem)
 admin.site.register(SideOption)
@@ -14,7 +14,7 @@ admin.site.register(LineItem)
 admin.site.register(MenuOption)
 admin.site.register(DietaryOption)
 admin.site.register(FoodPhoto)
-admin.site.register(SoftDrinkOption)
+admin.site.register(SoftDrinkSizeOption)
 admin.site.register(HotChocolateOption)
 admin.site.register(DrinkMenuItem)
 admin.site.register(CoffeeSizeOption)

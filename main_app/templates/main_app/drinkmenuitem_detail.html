@@ -5,6 +5,57 @@
     <div class="col s6 col-offset-3">
                 <h1>{{ drinkmenuitem.name }}</h1>
                 <p>{{ drinkmenuitem.description }}</p>
+
+            <div>
+                {% if drinkmenuitem.coffee_size_option.count %}
+                    <p>Size options:</p>
+                    <ul>
+                        {% for item in drinkmenuitem.coffee_size_calculation %}
+                            <li>{{ item.name }} - ${{ item.price }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div>
+                {% if drinkmenuitem.milk_option.count %}
+                    <p>Milk options:</p>
+                    <ul>
+                        {% for item in drinkmenuitem.milk_option.all %}
+                            <li>{{ item.name }} - ${{ item.price }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div>
+                {% if drinkmenuitem.coffee_strength_option.count %}
+                    <p>Coffee Strength options:</p>
+                    <ul>
+                        {% for item in drinkmenuitem.coffee_strength_option.all %}
+                            <li>{{ item.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div>
+                {% if drinkmenuitem.soft_drink_size_option.count %}
+                    <p>Size options:</p>
+                    <ul>
+                        {% for item in drinkmenuitem.soft_drink_size_calculation %}
+                            <li>{{ item.name }} - ${{ item.price }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div>
+                {% if drinkmenuitem.hot_chocolate_option.count %}
+                    <p>Coffee Strength options:</p>
+                    <ul>
+                        {% for item in drinkmenuitem.hot_chocolate_option.all %}
+                            <li>{{ item.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
             </div>
             <a href="{% url 'drink_menu_item_update' drinkmenuitem.id %}">Edit</a>
             <a href="{% url 'drink_menu_item_delete' drinkmenuitem.id %}">Delete</a>

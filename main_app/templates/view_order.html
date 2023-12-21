@@ -49,6 +49,36 @@
                     <li>{{ option.name }}</li>
                 {% endfor %}
             {% endif %}
+
+            {% if item.coffee_size_option.exists %}
+                {% for option in item.coffee_size_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.milk_option.exists %}
+                {% for option in item.milk_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.coffee_strength_option.exists %}
+                {% for option in item.coffee_strength_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.soft_drink_size_option.exists %}
+                {% for option in item.soft_drink_size_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.hot_chocolate_option.exists %}
+                {% for option in item.hot_chocolate_option.all %}
+                    <li>{{ option.name }}</li>
+                {% endfor %}
+            {% endif %}
         </ul>
     {% empty %}
     <div>

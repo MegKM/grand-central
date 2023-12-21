@@ -77,7 +77,7 @@ class CoffeeStrengthOption(models.Model):
     def __str__(self):
         return self.name
 
-class SoftDrinkOption(models.Model):
+class SoftDrinkSizeOption(models.Model):
     name = models.CharField(max_length=50)
     price = models.DecimalField(default = 0.0, decimal_places = 2, max_digits = 10)
 
@@ -126,8 +126,27 @@ class DrinkMenuItem(models.Model):
     coffee_size_option = models.ManyToManyField(CoffeeSizeOption, help_text='Select all that apply', blank=True)
     milk_option = models.ManyToManyField(MilkOption, help_text='Select all that apply', blank=True)
     coffee_strength_option = models.ManyToManyField(CoffeeStrengthOption, help_text='Select all that apply', blank=True)
-    soft_drink_option = models.ManyToManyField(SoftDrinkOption, help_text='Select all that apply', blank=True)
+    soft_drink_size_option = models.ManyToManyField(SoftDrinkSizeOption, help_text='Select all that apply', blank=True)
     hot_chocolate_option = models.ManyToManyField(HotChocolateOption, help_text='Select all that apply', blank=True)
+    
+    def __str__(self):
+        return self.name
+            
+    def coffee_size_calculation(self):
+        result = []
+        for size in self.coffee_size_option.all():
+            total_price = self.price + size.price
+            result.append({'name': size.name, 'price': total_price})
+        print(result)
+        return result
+    
+    def soft_drink_size_calculation(self):
+        result = []
+        for size in self.soft_drink_size_option.all():
+            total_price = self.price + size.price
+            result.append({'name': size.name, 'price': total_price})
+        print(result)
+        return result
     
     def get_absolute_url(self):
         return reverse('drink_menu_item_detail', kwargs={'pk': self.id})

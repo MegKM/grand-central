@@ -124,8 +124,35 @@ def add_drink_photo(request, drinkmenuitem_id):
             print(e)
     return redirect('drink_menu_item_detail', pk=drinkmenuitem_id)
 
-def create_line_item(request, pk):
+def add_food_line_item(request, pk):
     foodmenuitem = FoodMenuItem.objects.get(pk=pk)
+    error_message = ''  
+    order = Order.objects.get(user=request.user, isInProgress=True)
+
+    if request.method == 'POST':
+        form = LineItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('food_menu')
+        else:
+            error_message = 'Failed'
+
+    form = LineItemForm()
+    context = {
+        'form': form, 
+        'error_message': error_message,
+        'foodmenuitem': foodmenuitem,
+        'order': order
+        }
+
+    return render(
+        request,
+        'addlineitem.html',
+        context,
+    )
+
+def add_drink_line_item(request, pk):
+    foodmenuitem = DrinkMenuItem.objects.get(pk=pk)
     error_message = ''  
     order = Order.objects.get(user=request.user, isInProgress=True)
 
@@ -182,7 +209,6 @@ class EventList(ListView):
 class EventDetail(DetailView):
     model = Event
 
-
 def view_order(request):
     order = Order.objects.get(user=request.user, isInProgress=True)
 
@@ -190,7 +216,6 @@ def view_order(request):
         'order': order
     }
     return render(request, 'view_order.html', context)
-
 
 def add_event_photo(request, event_id):
     event = Event.objects.get(pk=event_id)

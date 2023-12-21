@@ -55,7 +55,7 @@
                                 <h5 class="card-title">{{ drink.name }}</h5>
                                 <p class="card-text">{{ drink.description }}</p>
                                 {% if user.is_superuser %}
-                                    <a href="{% url 'drink_menu_item_detail' drink.id %}">Edit</a>
+                                    <a href="{% url 'drink_menu_item_detail' drink.id %}">Details</a>
                                 {% endif %}
                                 {% if user.is_authenticated %}
                                     <a href="{% url 'add_line_item' drink.id%}">Add to order</a>
