@@ -46,7 +46,7 @@
 
             {% if item.remove_option.exists %}
                 {% for option in item.remove_option.all %}
-                    <li>{{ option.name }}</li>
+                    <li>Removed: {{ option.name }}</li>
                 {% endfor %}
             {% endif %}
 
