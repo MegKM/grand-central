@@ -6,8 +6,10 @@
     <h1>Current Order</h1>
     {% for item in order.lineitem_set.all %}
     
-        <h4>{{ item.name }}</h4> 
+        <h4>{{ item.name }} - ${{ item.price }}0</h4> 
         <ul>
+            <li>Details:</li>
+            <ul>
             {% if item.side_option.exists %}
                 {% for option in item.side_option.all %}
                     <li>{{ option.name }}</li>
@@ -80,12 +82,21 @@
                 {% endfor %}
             {% endif %}
         </ul>
+        </ul>
+        <div>
+            <form action="{% url 'remove_item_from_order' order.id item.id%}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-dark">Remove</button>
+            </form>
+          </div>
     {% empty %}
     <div>
         <h2>No order</h2>
         <a href="{% url 'food_menu' %}">Click here to get started</a>
     </div>
     {% endfor %}
+
+    <p>Total cost: {{ total_price }}</p>
 </div>
 
 {% endblock %}

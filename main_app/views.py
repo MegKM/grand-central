@@ -1,16 +1,17 @@
 import uuid
 import boto3
 import os
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import user_passes_test
-from .models import FoodMenuItem, FoodPhoto, DrinkMenuItem, DrinkPhoto, Order, Event, EventPhoto
+from .models import FoodMenuItem, FoodPhoto, DrinkMenuItem, DrinkPhoto, Order, Event, EventPhoto, LineItem
 from .forms import UserCreationForm, ProfileForm
 from .forms import LineItemForm, OrderForm
 
+#----------------------home----------------#
 def home(request):
     event_list = Event.objects.all()
     context = {
@@ -19,6 +20,7 @@ def home(request):
         }
     return render(request, 'home.html', context)
 
+#-------------------------users---------------------#
 def signup(request):
     error_message = ''
     if request.method == 'POST':
@@ -46,6 +48,7 @@ def signup(request):
         'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
+#----------------------food---------------------#
 class FoodMenuItemList(ListView):
     model = FoodMenuItem
 
@@ -64,6 +67,26 @@ class FoodMenuItemDelete(DeleteView):
     model = FoodMenuItem
     success_url = '/menu/food'
 
+def add_food_photo(request, foodmenuitem_id):
+    foodmenuitem = FoodMenuItem.objects.get(pk=foodmenuitem_id)
+    existing_photo = FoodPhoto.objects.filter(food=foodmenuitem).exists()
+    if existing_photo:
+        FoodPhoto.objects.filter(food=foodmenuitem).delete()
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        key = foodmenuitem.name + '_' + str(foodmenuitem_id) + photo_file.name[photo_file.name.rfind('.'):]
+        try:
+            bucket = os.environ['S3_BUCKET']
+            s3.upload_fileobj(photo_file, bucket, key)
+            url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+            FoodPhoto.objects.create(url=url, food=foodmenuitem, name=foodmenuitem)
+        except Exception as e:
+            print('An error occurred uploading file to S3')
+            print(e)
+    return redirect('food_menu_item_detail', pk=foodmenuitem_id)
+
+#---------------------drinks---------------------------#
 class DrinkMenuItemList(ListView):
     model = DrinkMenuItem
 
@@ -86,25 +109,6 @@ class DrinkMenuItemDelete(DeleteView):
     model = DrinkMenuItem
     success_url = '/menu/drinks'
 
-def add_food_photo(request, foodmenuitem_id):
-    foodmenuitem = FoodMenuItem.objects.get(pk=foodmenuitem_id)
-    existing_photo = FoodPhoto.objects.filter(food=foodmenuitem).exists()
-    if existing_photo:
-        FoodPhoto.objects.filter(food=foodmenuitem).delete()
-    photo_file = request.FILES.get('photo-file', None)
-    if photo_file:
-        s3 = boto3.client('s3')
-        key = foodmenuitem.name + '_' + str(foodmenuitem_id) + photo_file.name[photo_file.name.rfind('.'):]
-        try:
-            bucket = os.environ['S3_BUCKET']
-            s3.upload_fileobj(photo_file, bucket, key)
-            url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-            FoodPhoto.objects.create(url=url, food=foodmenuitem, name=foodmenuitem)
-        except Exception as e:
-            print('An error occurred uploading file to S3')
-            print(e)
-    return redirect('food_menu_item_detail', pk=foodmenuitem_id)
-
 def add_drink_photo(request, drinkmenuitem_id):
     drinkmenuitem = DrinkMenuItem.objects.get(pk=drinkmenuitem_id)
     existing_photo = DrinkPhoto.objects.filter(drink=drinkmenuitem).exists()
@@ -124,59 +128,7 @@ def add_drink_photo(request, drinkmenuitem_id):
             print(e)
     return redirect('drink_menu_item_detail', pk=drinkmenuitem_id)
 
-def add_food_line_item(request, pk):
-    foodmenuitem = FoodMenuItem.objects.get(pk=pk)
-    error_message = ''  
-    order = Order.objects.get(user=request.user, isInProgress=True)
-
-    if request.method == 'POST':
-        form = LineItemForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('food_menu')
-        else:
-            error_message = 'Failed'
-
-    form = LineItemForm()
-    context = {
-        'form': form, 
-        'error_message': error_message,
-        'foodmenuitem': foodmenuitem,
-        'order': order
-        }
-
-    return render(
-        request,
-        'addlineitem.html',
-        context,
-    )
-
-def add_drink_line_item(request, pk):
-    foodmenuitem = DrinkMenuItem.objects.get(pk=pk)
-    error_message = ''  
-    order = Order.objects.get(user=request.user, isInProgress=True)
-
-    if request.method == 'POST':
-        form = LineItemForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('food_menu')
-        else:
-            error_message = 'Failed'
-
-    form = LineItemForm()
-    context = {
-        'form': form, 
-        'error_message': error_message,
-        'foodmenuitem': foodmenuitem,
-        'order': order
-        }
-
-    return render(
-        request,
-        'addlineitem.html',
-        context,
-    )
+#---------------------------orders---------------------------#
 
 def create_order(request):
     existing_order = Order.objects.filter(user=request.user).first()
@@ -203,19 +155,89 @@ def create_order(request):
     }
     return render(request, 'create_order.html', context)
 
+def view_order(request):
+    order = Order.objects.get(user=request.user, isInProgress=True)
+    lineitems = LineItem.objects.filter(order=order)
+    total_price = 0
+    for item_price in lineitems:
+        total_price += item_price.price
+        
+    context = {
+        'order': order,
+        'total_price': total_price
+    }
+    return render(request, 'view_order.html', context)
+
+def add_food_line_item(request, pk):
+    item = FoodMenuItem.objects.get(pk=pk)
+    error_message = ''  
+    order = Order.objects.get(user=request.user, isInProgress=True)
+
+    if request.method == 'POST':
+        form = LineItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('food_menu')
+        else:
+            error_message = form.errors.as_text()
+
+    form = LineItemForm()
+    context = {
+        'form': form, 
+        'error_message': error_message,
+        'item': item,
+        'order': order
+        }
+
+    return render(
+        request,
+        'addlineitem.html',
+        context,
+    )
+
+def add_drink_line_item(request, pk):
+    item = DrinkMenuItem.objects.get(pk=pk)
+    error_message = ''  
+    order = Order.objects.get(user=request.user, isInProgress=True)
+
+    if request.method == 'POST':
+        form = LineItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('food_menu')
+        else:
+            error_message = 'Failed'
+
+    form = LineItemForm()
+    context = {
+        'form': form, 
+        'error_message': error_message,
+        'item': item,
+        'order': order
+        }
+
+    return render(
+        request,
+        'addlineitem.html',
+        context,
+    )
+
+
+
+def remove_item_from_order(request, order_id, item_id):
+    order = get_object_or_404(Order, id=order_id)
+    line_item = get_object_or_404(LineItem, id=item_id, order=order)
+    
+    line_item.delete()
+    return redirect('order_view')
+
+
+# -----------------events--------------- #
 class EventList(ListView):
     model = Event
 
 class EventDetail(DetailView):
     model = Event
-
-def view_order(request):
-    order = Order.objects.get(user=request.user, isInProgress=True)
-
-    context = {
-        'order': order
-    }
-    return render(request, 'view_order.html', context)
 
 def add_event_photo(request, event_id):
     event = Event.objects.get(pk=event_id)

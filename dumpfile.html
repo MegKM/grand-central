@@ -1,3 +1,106 @@
+{% block javascript %}
+<script>
+    function getElementIfExists(id) {
+        const element = document.getElementById(id);
+        return element ? element : null;
+    }
+
+    const foodSizeOptionSelect = getElementIfExists('id_size_option');
+    const gravyOptionSelect = getElementIfExists('id_gravy_option');
+    const addedOptionSelect = getElementIfExists('id_added_option');
+    const coffeeSizeOptionSelect = getElementIfExists('id_coffee_size_option');
+    const milkOptionSelect = getElementIfExists('id_milk_option');
+    const softDrinkSizeOptionSelect = getElementIfExists('id_soft_drink_size_option');
+
+    const displayPrice = document.getElementById('display_price');
+    const originalPrice = parseFloat(document.getElementById('id_price').value);
+    const priceInput = document.getElementById('id_price');
+
+    foodSizeOptionSelect?.addEventListener('change', updateTotal);
+    gravyOptionSelect?.addEventListener('change', updateTotal);
+    addedOptionSelect?.addEventListener('change', updateTotal);
+    coffeeSizeOptionSelect?.addEventListener('change', updateTotal);
+    milkOptionSelect?.addEventListener('change', updateTotal);
+    softDrinkSizeOptionSelect?.addEventListener('change', updateTotal);
+
+    let runningTotal = originalPrice;
+
+    function updateTotal() {
+        runningTotal = originalPrice;
+
+        const selectedSize = parseFloat(foodSizeOptionSelect?.options[foodSizeOptionSelect.selectedIndex]?.getAttribute('option-price')) || 0;
+        runningTotal += selectedSize;
+
+        const selectedCoffeeSize = parseFloat(coffeeSizeOptionSelect?.options[coffeeSizeOptionSelect.selectedIndex]?.getAttribute('option-price')) || 0;
+        runningTotal += selectedCoffeeSize;
+
+        const selectedMilk = parseFloat(milkOptionSelect?.options[milkOptionSelect.selectedIndex]?.getAttribute('option-price')) || 0;
+        runningTotal += selectedMilk;
+
+        const selectedSoftDrinkSize = parseFloat(softDrinkSizeOptionSelect?.options[softDrinkSizeOptionSelect.selectedIndex]?.getAttribute('option-price')) || 0;
+        runningTotal += selectedSoftDrinkSize;
+
+        for (const option of gravyOptionSelect?.selectedOptions) {
+            const gravyPrice = parseFloat(option.getAttribute('option-price'));
+            runningTotal += gravyPrice;
+        }
+
+        for (const option of addedOptionSelect?.selectedOptions) {
+            const addedPrice = parseFloat(option.getAttribute('option-price'));
+            runningTotal += addedPrice;
+        }
+
+        updateRunningTotal(runningTotal);
+    }
+
+    function updateRunningTotal(total) {
+        displayPrice.innerText = `$${total.toFixed(2)}`;
+        priceInput.value = parseFloat(total.toFixed(2));
+    }
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% if order.exists %}
 {% for o in order %}
     {% if o.isInProgress %}

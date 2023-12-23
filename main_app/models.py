@@ -186,7 +186,19 @@ class LineItem(models.Model):
     cook_option = models.ManyToManyField(CookOption, help_text='Select all that apply', blank=True)
     sauce_option = models.ManyToManyField(SauceOption, help_text='Select all that apply', blank=True)
     remove_option = models.ManyToManyField(RemoveOption, help_text='Select all that apply', blank=True)
+    coffee_size_option = models.ManyToManyField(CoffeeSizeOption, help_text='Select all that apply', blank=True)
+    milk_option = models.ManyToManyField(MilkOption, help_text='Select all that apply', blank=True)
+    coffee_strength_option = models.ManyToManyField(CoffeeStrengthOption, help_text='Select all that apply', blank=True)
+    soft_drink_size_option = models.ManyToManyField(SoftDrinkSizeOption, help_text='Select all that apply', blank=True)
+    hot_chocolate_option = models.ManyToManyField(HotChocolateOption, help_text='Select all that apply', blank=True)
    
+    # def total_price(self):
+    #     total_price = 0
+    #     for item_price in self.price.all():
+    #         total_price += item_price
+    #     print(total_price)
+    #     return total_price
+
     def __str__(self):
         return f'Item {self.name} - {self.order}'
  

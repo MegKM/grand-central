@@ -1,33 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
 
+{% if error_message %}
+    <p>{{ error_message }}</p>
+{% endif %}
+
+
+
 <div class="container m-5">
     <form method="post">
         {% csrf_token %}
         <div>
             <label class ="visually-hidden-focusable" for="id_name">Name:</label>
-            <input class ="visually-hidden-focusable" name="name" id="id_name" value="{{foodmenuitem.name}}"><span class="fs-2 mb-2">{{ foodmenuitem.name }}</span></input>
+            <input class ="visually-hidden-focusable" name="name" id="id_name" value="{{item.name}}"><span class="fs-2 mb-2">{{ item.name }}</span></input>
         </div>
         <div>
-            {% for photo in foodmenuitem.foodphoto_set.all %}
-                <img src="{{ photo.url }}" class="img-fluid rounded-start" alt="Image of {{ food.name }}" style="max-width: 250px;">
-            {% empty %}
-                <div></div>
-            {% endfor %}
+            {% if item.foodphoto_set.exists %}
+                {% for photo in item.foodphoto_set.all %}
+                    <img src="{{ photo.url }}" class="img-fluid rounded-start" alt="Image of {{ food.name }}" style="max-width: 250px;">
+                {% empty %}
+                    <div></div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            {% if item.drinkphoto_set.exists %}
+                {% for photo in item.drinkphoto_set.all %}
+                    <img src="{{ photo.url }}" class="img-fluid rounded-start" alt="Image of {{ food.name }}" style="max-width: 250px;">
+                {% empty %}
+                    <div></div>
+                {% endfor %}
+            {% endif %}
         </div>
         <div>
             <label for="id_price">Price:</label>
-        <input class ="visually-hidden-focusable" name="price" id="id_price" value="{{ foodmenuitem.price }}"> ${{ foodmenuitem.price }}</input>
+        <input class="visually-hidden-focusable" name="price" id="id_price" value="{{ item.price }}"><span id="display_price">${{ item.price }}</span> </input>
         </div>
         <div>
             <label for="id_order">Your Order No. is</label>
-            <input class ="visually-hidden-focusable" name="order" id="id_order" value="{{ order.id }}"> {{ order.id }}</input>
+            <input class="visually-hidden-focusable" name="order" id="id_order" value="{{ order.id }}"> {{ order.id }}</input>
         </div>
         <div>
-            {% if foodmenuitem.side_option.exists %}
+            {% if item.side_option.exists %}
                 <label for="id_side_option">Choose your side:</label>
                 <select class="form-select" name="side_option" id="id_side_option" >
-                    {% for option in foodmenuitem.side_option.all %}
+                    {% for option in item.side_option.all %}
                         <option value="{{ option.id }}">{{ option.name }}</option>
                     {% endfor %}
                 </select>
@@ -36,11 +53,13 @@
             {% endif %}
         </div>
         <div>
-            {% if foodmenuitem.added_option.exists %}
+            {% if item.added_option.exists %}
                 <label for="id_added_option">Things to add:</label>
                 <select class="form-select" name="added_option" id="id_added_option" multiple>
-                    {% for option in foodmenuitem.added_option.all %}
-                        <option value="{{ option.id }}">{{ option.name }} - ${{ option.price }}</option>
+                    {% for option in item.added_option.all %}
+                        <option value="{{ option.id }}" option-price="{{ option.price }}">
+                            {{ option.name }} - Additional ${{ option.price }}
+                        </option>
                     {% endfor %}
                 </select>
                 <div class="form-text">Ctrl + click to select more than one</div>
@@ -49,11 +68,13 @@
             {% endif %}
         </div>
         <div>
-            {% if foodmenuitem.size_option.exists %}
+            {% if item.size_option.exists %}
                 <label for="id_size_option">Which size?</label>
                 <select class="form-select" name="size_option" id="id_size_option" >
-                    {% for option in foodmenuitem.size_option.all %}
-                        <option value="{{ option.id }}">{{ option.name }} - Additional ${{ option.price }}</option>
+                    {% for option in item.size_option.all %}
+                        <option value="{{ option.id }}" option-price="{{ option.price }}">
+                            {{ option.name }} - Additional ${{ option.price }}
+                        </option>
                     {% endfor %}
                 </select>
             {% else %}
@@ -61,11 +82,13 @@
             {% endif %}
         </div>
         <div>
-            {% if foodmenuitem.gravy_option.exists %}
+            {% if item.gravy_option.exists %}
                 <label for="id_gravy_option">Choose gravy:</label>
                 <select class="form-select" name="gravy_option" id="id_gravy_option" multiple>
-                    {% for option in foodmenuitem.gravy_option.all %}
-                        <option value="{{ option.id }}">{{ option.name }} - ${{ option.price }}</option>
+                    {% for option in item.gravy_option.all %}
+                        <option value="{{ option.id }}" option-price="{{ option.price }}">
+                            {{ option.name }} - ${{ option.price }}
+                        </option>
                     {% endfor %}
                 </select>
                 <div class="form-text">Ctrl + click to select more than one:</div>
@@ -74,10 +97,10 @@
             {% endif %}
         </div>
         <div>
-            {% if foodmenuitem.cook_option.exists %}
+            {% if item.cook_option.exists %}
                 <label for="id_cook_option">How would you like it cooked?</label>
                 <select class="form-select" name="cook_option" id="id_cook_option" >
-                    {% for option in foodmenuitem.cook_option.all %}
+                    {% for option in item.cook_option.all %}
                         <option value="{{ option.id }}">{{ option.name }}</option>
                     {% endfor %}
                 </select>
@@ -86,10 +109,10 @@
             {% endif %}
         </div>
         <div>
-            {% if foodmenuitem.sauce_option.exists %}
+            {% if item.sauce_option.exists %}
                 <label for="id_sauce_option">Choose sauce:</label>
                 <select class="form-select" name="sauce_option" id="id_sauce_option" >
-                    {% for option in foodmenuitem.sauce_option.all %}
+                    {% for option in item.sauce_option.all %}
                         <option value="{{ option.id }}">{{ option.name }}</option>
                     {% endfor %}
                 </select>
@@ -98,14 +121,80 @@
             {% endif %}
         </div>
         <div>
-            {% if foodmenuitem.remove_option.exists %}
+            {% if item.remove_option.exists %}
                 <label for="id_remove_option">Would you like anything removed?</label>
                 <select class="form-select" name="remove_option" id="id_remove_option" multiple>
-                    {% for option in foodmenuitem.remove_option.all %}
+                    {% for option in item.remove_option.all %}
                         <option value="{{ option.id }}">{{ option.name }}</option>
                     {% endfor %}
                 </select>
                 <div class="form-text">Ctrl + click to select more than one:</div>
+            {% else %}
+                <span></span>
+            {% endif %}
+        </div>
+        <div>
+            {% if item.coffee_size_option.exists %}
+                <label for="id_coffee_size_option">Choose size:</label>
+                <select class="form-select" name="coffee_size_option" id="id_coffee_size_option" >
+                    {% for option in item.coffee_size_option.all %}
+                        <option value="{{ option.id }}" option-price="{{ option.price }}">
+                            {{ option.name }} - Additional ${{ option.price }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <span></span>
+            {% endif %}
+        </div>
+        <div>
+            {% if item.milk_option.exists %}
+                <label for="id_milk_option">Choose milk:</label>
+                <select class="form-select" name="milk_option" id="id_milk_option" >
+                    {% for option in item.milk_option.all %}
+                        <option value="{{ option.id }}" option-price="{{ option.price }}">
+                            {{ option.name }} - Additional ${{ option.price }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <span></span>
+            {% endif %}
+        </div>
+        <div>
+            {% if item.coffee_strength_option.exists %}
+                <label for="id_coffee_strength_option">Choose strength:</label>
+                <select class="form-select" name="coffee_strength_option" id="id_coffee_strength_option" >
+                    {% for option in item.coffee_strength_option.all %}
+                        <option value="{{ option.id }}">{{ option.name }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <span></span>
+            {% endif %}
+        </div>
+        <div>
+            {% if item.soft_drink_size_option.exists %}
+                <label for="id_soft_drink_size_option">Choose size:</label>
+                <select class="form-select" name="soft_drink_size_option" id="id_soft_drink_size_option" >
+                    {% for option in item.soft_drink_size_option.all %}
+                        <option value="{{ option.id }}" option-price="{{ option.price }}">
+                            {{ option.name }} - Additional ${{ option.price }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <span></span>
+            {% endif %}
+        </div>
+        <div>
+            {% if item.hot_chocolate_option.exists %}
+                <label for="id_hot_chocolate_option">Choose flavor:</label>
+                <select class="form-select" name="hot_chocolate_option" id="id_hot_chocolate_option" >
+                    {% for option in item.hot_chocolate_option.all %}
+                        <option value="{{ option.id }}">{{ option.name }}</option>
+                    {% endfor %}
+                </select>
             {% else %}
                 <span></span>
             {% endif %}
@@ -113,4 +202,72 @@
         <input type="submit" value="Submit" class="btn btn-dark">
     </form>
 </div>
+
+
+{% block javascript  %}
+    <script>
+        function getElementIfExists(id){
+            const element = document.getElementById(id);
+            return element ? element : null;
+        };
+
+        const foodSizeOptionSelect = getElementIfExists('id_size_option');
+        const gravyOptionSelect = getElementIfExists('id_gravy_option');
+        const addedOptionSelect = getElementIfExists('id_added_option');
+        const coffeeSizeOptionSelect = getElementIfExists('id_coffee_size_option');
+        const milkOptionSelect = getElementIfExists('id_milk_option');
+        const softDrinkSizeOptionSelect = getElementIfExists('id_soft_drink_size_option');
+
+        const displayPrice = document.getElementById('display_price');
+        const originalPrice = parseFloat(document.getElementById('id_price').value);
+        const priceInput = document.getElementById('id_price');
+
+        foodSizeOptionSelect?.addEventListener('change', updateTotal);
+        gravyOptionSelect?.addEventListener('change', updateTotal);
+        addedOptionSelect?.addEventListener('change', updateTotal);
+        coffeeSizeOptionSelect?.addEventListener('change', updateTotal);
+        milkOptionSelect?.addEventListener('change', updateTotal);
+        softDrinkSizeOptionSelect?.addEventListener('change', updateTotal);
+
+        let runningTotal = originalPrice;
+
+        function updateTotal(){
+            runningTotal = originalPrice;
+
+            const selectedSize = parseFloat(foodSizeOptionSelect?.options[foodSizeOptionSelect.selectedIndex]?.getAttribute('option-price')) || 0;
+            runningTotal += selectedSize
+
+            const selectedCoffeeSize = parseFloat(coffeeSizeOptionSelect?.options[coffeeSizeOptionSelect.selectedIndex]?.getAttribute('option-price')) || 0;
+            runningTotal += selectedCoffeeSize
+
+            const selectedMilk = parseFloat(milkOptionSelect?.options[milkOptionSelect.selectedIndex]?.getAttribute('option-price')) || 0;
+            runningTotal += selectedMilk
+
+            const selectedSoftDrinkSize = parseFloat(softDrinkSizeOptionSelect?.options[softDrinkSizeOptionSelect.selectedIndex]?.getAttribute('option-price')) || 0;
+            runningTotal += selectedSoftDrinkSize
+
+            if (gravyOptionSelect && gravyOptionSelect.selectedOptions){
+                for (const option of gravyOptionSelect.selectedOptions){
+                    const gravyPrice = parseFloat(option.getAttribute('option-price'));
+                    runningTotal += gravyPrice
+                }
+            }
+            
+            if (addedOptionSelect && addedOptionSelect.selectedOptions){
+                for (const option of addedOptionSelect?.selectedOptions){
+                    const addedPrice = parseFloat(option.getAttribute('option-price'));
+                    runningTotal += addedPrice
+                }
+            }
+            updateRunningTotal(runningTotal)
+        }
+
+        function updateRunningTotal(total){
+            displayPrice.innerText = `$${total.toFixed(2)}`;
+            priceInput.value = parseFloat(total.toFixed(2));
+        }
+        
+    </script>
+{% endblock %}
+
 {% endblock %}

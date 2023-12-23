@@ -23,6 +23,7 @@ urlpatterns = [
 
     path('menu/order/create', views.create_order, name='order_create'),
     path('menu/order/view', views.view_order, name='order_view'),
+    path('menu/order/<int:order_id>/remove_item/<int:item_id>/', views.remove_item_from_order, name='remove_item_from_order'),
 
     path('event/', views.EventList.as_view(), name='event_list'),
     path('event/add_event', views.EventCreate.as_view(), name='event_create'),
