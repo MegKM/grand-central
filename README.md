@@ -26,11 +26,10 @@ The site is currently live on heroku and can be visited [here](https://grandcent
 ### Current functionality
 * Admin staff can CRUD Food & Drink Items, including various options (eg. sides, size of meals, gravy, etc.), as well as events.
 * Customers can view the events and menu.
-* After creating an account, customers can add various menu items to their order, adding and removing applicable sides, and view what is currently there.
+* After creating an account, customers can add and remove various menu items including their applicable sides to their order, and view what is currently there.
 
 ### Currently being developed
-* Updates to the drinks menu and functionality.
-* Ability to remove items from order, view total dollar amount and finalise order.
+* Ability to finalise order.
 * General CSS improvements across site (including media queries).
 * Filter menus by type, eg. mains, starters, coffee, etc.
 * Adding to the homepage:
