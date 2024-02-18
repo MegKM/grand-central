@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import user_passes_test
-from .models import FoodMenuItem, FoodPhoto, DrinkMenuItem, DrinkPhoto, Order, Event, EventPhoto, LineItem
+from .models import FoodMenuItem, FoodPhoto, DrinkMenuItem, DrinkPhoto, Order, Event, EventPhoto, LineItem, MenuOption
 from .forms import UserCreationForm, ProfileForm
 from .forms import LineItemForm, OrderForm
 
@@ -171,8 +171,11 @@ def view_order(request):
 def add_food_line_item(request, pk):
     item = FoodMenuItem.objects.get(pk=pk)
     error_message = ''  
-    order = Order.objects.get(user=request.user, isInProgress=True)
-
+    existing_order = Order.objects.filter(user=request.user, isInProgress=True).first()
+    
+    if not existing_order:
+        return redirect('order_create')
+   
     if request.method == 'POST':
         form = LineItemForm(request.POST)
         if form.is_valid():
@@ -186,7 +189,7 @@ def add_food_line_item(request, pk):
         'form': form, 
         'error_message': error_message,
         'item': item,
-        'order': order
+        'order': existing_order
         }
 
     return render(
@@ -198,7 +201,10 @@ def add_food_line_item(request, pk):
 def add_drink_line_item(request, pk):
     item = DrinkMenuItem.objects.get(pk=pk)
     error_message = ''  
-    order = Order.objects.get(user=request.user, isInProgress=True)
+    existing_order = Order.objects.filter(user=request.user, isInProgress=True).first()
+    
+    if not existing_order:
+        return redirect('order_create')
 
     if request.method == 'POST':
         form = LineItemForm(request.POST)
@@ -213,7 +219,7 @@ def add_drink_line_item(request, pk):
         'form': form, 
         'error_message': error_message,
         'item': item,
-        'order': order
+        'order': existing_order
         }
 
     return render(
@@ -221,8 +227,6 @@ def add_drink_line_item(request, pk):
         'addlineitem.html',
         context,
     )
-
-
 
 def remove_item_from_order(request, order_id, item_id):
     order = get_object_or_404(Order, id=order_id)

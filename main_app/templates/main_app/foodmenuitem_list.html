@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary center mt-2 mb-2">
+<!-- <nav class="navbar navbar-expand-lg bg-body-tertiary center mt-2 mb-2">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav filters">
                 <li class="nav-item">
-                    <button class="btn">All</a>
+                    <button class="btn" id="all">All</a>
                 </li>
-                    <button class="btn">Starters</button>
+                    <button class="btn" id="starters">Starters</button>
                 <li class="nav-item">
-                    <button class="btn">Brunch</button>
+                    <button class="btn" id="brunch">Brunch</button>
                 </li>
                 <li class="nav-item">
-                    <button class="btn">Mains</button>
+                    <button class="btn" id="mains">Mains</button>
                 </li>
                 <li class="nav-item">
                     <button class="btn">Burgers</button>
@@ -39,15 +39,17 @@
             </ul>
         </div>
     </div>
-</nav>
+</nav> -->
 
 
-<div class="container food all">
+<div class="container food all mt-4">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="row row-cols-1 row-cols-md-2 g-4 all">
             {% for food in foodmenuitem_list %}
-                <div class="col">
+                <div class="col food-item"
+                data-id="{{ food.id }}"
+                data-name="{{ food.name }}">
                     <div class="card h-100" style="max-width: 600px;">
                         <div class="row g-0">
                         <div class="col-md-4">
@@ -78,16 +80,16 @@
 
 {% block javascript  %}
     <script>
-        // each button has an event listener to hide all the food and redisplay
-        // just the selected category
+        const foodmenuitems = "{{ foodmenuitems }}"
         document.querySelectorAll('button').forEach((button) => {
             button.addEventListener('click', () => {
                 // hide everything
                 document.querySelectorAll('.food').forEach((div) => div.style.display = 'none')
                 // display the current category
-                const category = button.innerText;
+                const category = event.target.id
                 console.log(category)
-                document.querySelector(`.food.${ category }`).style.display = 'block';
+                console.log(categories.category)
+                // document.querySelector(`.food.${ category }`).style.display = 'block';
             })
         });
     </script>
