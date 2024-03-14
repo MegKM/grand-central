@@ -7,11 +7,14 @@
 {% endif %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <input type="submit" value="Submit" class="btn">
-    </form>
+    <div class="container mt-4">
+        <form method="post">
+            {% csrf_token %}
+            <table>
+              {{ form.as_table }}
+            </table>
+            <input type="submit" value="Submit" class="btn btn-dark">
+        </form>
+    </div>
 {% endblock %}
+

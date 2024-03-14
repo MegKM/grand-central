@@ -1,94 +1,96 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div>
+<div class="container">
 
     <h1>Current Order</h1>
     {% for item in order.lineitem_set.all %}
-    
-        <h4>{{ item.name }} - ${{ item.price }}0</h4> 
-        <ul>
-            <li>Details:</li>
+        <div class="m-3">
+            <h4>{{ item.name }} - ${{ item.price }}0</h4> 
             <ul>
-            {% if item.side_option.exists %}
-                {% for option in item.side_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                <li>Details:</li>
+                <ul>
+                {% if item.side_option.exists %}
+                    {% for option in item.side_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.added_option.exists %}
-                {% for option in item.added_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.added_option.exists %}
+                    {% for option in item.added_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.size_option.exists %}
-                {% for option in item.size_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.size_option.exists %}
+                    {% for option in item.size_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.gravy_option.exists %}
-                {% for option in item.gravy_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.gravy_option.exists %}
+                    {% for option in item.gravy_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.cook_option.exists %}
-                {% for option in item.cook_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.cook_option.exists %}
+                    {% for option in item.cook_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.sauce_option.exists %}
-                {% for option in item.sauce_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.sauce_option.exists %}
+                    {% for option in item.sauce_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.remove_option.exists %}
-                {% for option in item.remove_option.all %}
-                    <li>Removed: {{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.remove_option.exists %}
+                    {% for option in item.remove_option.all %}
+                        <li>Removed: {{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.coffee_size_option.exists %}
-                {% for option in item.coffee_size_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.coffee_size_option.exists %}
+                    {% for option in item.coffee_size_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.milk_option.exists %}
-                {% for option in item.milk_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.milk_option.exists %}
+                    {% for option in item.milk_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.coffee_strength_option.exists %}
-                {% for option in item.coffee_strength_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.coffee_strength_option.exists %}
+                    {% for option in item.coffee_strength_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.soft_drink_size_option.exists %}
-                {% for option in item.soft_drink_size_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
+                {% if item.soft_drink_size_option.exists %}
+                    {% for option in item.soft_drink_size_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
 
-            {% if item.hot_chocolate_option.exists %}
-                {% for option in item.hot_chocolate_option.all %}
-                    <li>{{ option.name }}</li>
-                {% endfor %}
-            {% endif %}
-        </ul>
-        </ul>
-        <div>
-            <form action="{% url 'remove_item_from_order' order.id item.id%}" method="POST">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-dark">Remove</button>
-            </form>
-          </div>
+                {% if item.hot_chocolate_option.exists %}
+                    {% for option in item.hot_chocolate_option.all %}
+                        <li>{{ option.name }}</li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+            </ul>
+            <div>
+                <form action="{% url 'remove_item_from_order' order.id item.id%}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-dark">Remove</button>
+                </form>
+            </div>
+            <hr>
+        </div>
     {% empty %}
     <div>
         <h2>No order</h2>
@@ -96,7 +98,8 @@
     </div>
     {% endfor %}
 
-    <p>Total cost: {{ total_price }}</p>
+    <h5>Total cost: ${{ total_price }}</h5>
+    <!-- <button class="btn btn-dark">Place order</button> -->
 </div>
 
 {% endblock %}
